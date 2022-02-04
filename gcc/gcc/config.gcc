@@ -558,6 +558,9 @@ tilegx*-*-*)
 tilepro*-*-*)
 	cpu_type=tilepro
 	;;
+tricore*-*-*)
+	cpu_type=tricore
+	;;	
 esac
 
 tm_file=${cpu_type}/${cpu_type}.h
@@ -3155,6 +3158,26 @@ tilepro*-*-linux*)
 	cxx_target_objs="${cxx_target_objs} tilepro-c.o"
 	extra_headers="feedback.h"
 	;;
+tricore-*)
+	tm_file="tricore/tricore-devices.h ${tm_file} elfos.h"
+	extra_gcc_objs="driver-tricore.o tricore-devices.o"
+	extra_objs="tricore-devices.o"
+	tmake_file="tricore/t-multilib tricore/t-tricore"
+	c_target_objs="${c_target_objs} tricore-c.o"
+	cxx_target_objs="${cxx_target_objs} tricore-c.o"
+	extra_options="${extra_options} tricore/tricore-mcpu.opt"
+	case "${with_newlib}" in
+	    yes)
+		tm_file="${tm_file} newlib-stdint.h"
+		tm_defines="${tm_defines} DEFAULT_LIBC=LIBC_NEWLIB"
+		;;
+	    *)
+		tm_file="${tm_file} htc-stdint.h tricore/tricore-dinkum.h"
+		tmake_file="${tmake_file} t-htc-dnk"
+		tm_defines="${tm_defines} DEFAULT_LIBC=LIBC_DINKUM"
+		;;
+	esac
+	;;	
 v850-*-rtems*)
 	target_cpu_default="TARGET_CPU_generic"
 	tm_file="dbxelf.h elfos.h v850/v850.h"
