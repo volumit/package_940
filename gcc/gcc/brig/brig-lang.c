@@ -886,28 +886,29 @@ brig_build_c_type_nodes (void)
 static bool
 brig_langhook_init (void)
 {
-  build_common_tree_nodes (false);
+	/* added parameter for tricore port for short_double */
+	build_common_tree_nodes (false,false);
 
-  /* Builtin initialization related code borrowed from lto-lang.c.  */
-  void_list_node = build_tree_list (NULL_TREE, void_type_node);
+	/* Builtin initialization related code borrowed from lto-lang.c.  */
+	void_list_node = build_tree_list (NULL_TREE, void_type_node);
 
-  brig_build_c_type_nodes ();
+	brig_build_c_type_nodes ();
 
-  if (TREE_CODE (va_list_type_node) == ARRAY_TYPE)
-    {
-      tree x = build_pointer_type (TREE_TYPE (va_list_type_node));
-      brig_define_builtins (x, x);
-    }
-  else
-    {
-      brig_define_builtins (build_reference_type (va_list_type_node),
-			    va_list_type_node);
-    }
+	if (TREE_CODE (va_list_type_node) == ARRAY_TYPE)
+	{
+		tree x = build_pointer_type (TREE_TYPE (va_list_type_node));
+		brig_define_builtins (x, x);
+	}
+	else
+	{
+		brig_define_builtins (build_reference_type (va_list_type_node),
+				va_list_type_node);
+	}
 
-  targetm.init_builtins ();
-  build_common_builtin_nodes ();
+	targetm.init_builtins ();
+	build_common_builtin_nodes ();
 
-  return true;
+	return true;
 }
 
 #undef LANG_HOOKS_NAME
