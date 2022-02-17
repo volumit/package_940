@@ -2550,6 +2550,13 @@ case $target in
     ;;
 esac
 
+htc_frag=/dev/null
+case "${target}" in
+  tricore-*-* | powerpc-ht-eabi | ppc-ht-eabi)
+    htc_frag="config/mh-htc"
+    ;;
+esac
+
 # If --enable-target-optspace always use -Os instead of -O2 to build
 # the target libraries, similarly if it is not specified, use -Os
 # on selected platforms.
@@ -3228,7 +3235,7 @@ case "${target}" in
 esac
 
 # Makefile fragments.
-for frag in host_makefile_frag target_makefile_frag alphaieee_frag ospace_frag;
+for frag in host_makefile_frag target_makefile_frag alphaieee_frag ospace_frag htc_frag;
 do
   eval fragval=\$$frag
   if test $fragval != /dev/null; then
@@ -3238,6 +3245,7 @@ done
 AC_SUBST_FILE(host_makefile_frag)
 AC_SUBST_FILE(target_makefile_frag)
 AC_SUBST_FILE(alphaieee_frag)
+AC_SUBST_FILE(htc_frag)
 AC_SUBST_FILE(ospace_frag)
 
 # Miscellanea: directories, flags, etc.
