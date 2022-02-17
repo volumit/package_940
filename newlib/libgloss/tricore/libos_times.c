@@ -11,13 +11,11 @@
    implementation is an example for the TC1796 with a quartz frequency
    of 20 MHz
 */
+/*
 #if defined(__TC1796__) 
 #include <tc1796b/scu.h>
 #include <tc1796b/stm.h>
 #endif
-
-#define FREQ 75000000	/* clock rate of processor in Hz */
-
 
 clock_t times (struct tms *buf)
 {
@@ -30,3 +28,4 @@ clock_t times (struct tms *buf)
 	}
 	return clk;
 };
+*/
