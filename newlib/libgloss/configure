@@ -2471,8 +2471,6 @@ case "${target}" in
 	;;
   tricore*)
         subdirs="$subdirs tricore"
-
-	    config_libnosys=false
 	;;
   xc16x-*-*)
 	subdirs="$subdirs xc16x"
