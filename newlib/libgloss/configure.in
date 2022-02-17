@@ -112,7 +112,6 @@ case "${target}" in
 	;;
   tricore*)
         AC_CONFIG_SUBDIRS([tricore])
-	    config_libnosys=false
 	;;
   xc16x-*-*)
 	AC_CONFIG_SUBDIRS([xc16x])
