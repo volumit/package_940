@@ -1784,8 +1784,10 @@ main (int argc, char *argv[])
   progname = p;
 
   xmalloc_set_program_name (progname);
-
-  gcc_init_libintl ();
+#ifdef WITH_HIGHTEC
+  init_htc_locale_dir (getenv ("GCC_EXEC_PREFIX"), true);
+#endif
+  gcc_init_libintl (false);
 
   diagnostic_initialize (global_dc, 0);
 
