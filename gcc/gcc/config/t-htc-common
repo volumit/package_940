@@ -1,5 +1,5 @@
 #
-# this is the Makefile part for the common HTC functions.
+# this is the Makefile part for the common  HTC functions.
 #
 
 BUILD_DATE := $(shell echo `date +%Y-%m-%d`)
