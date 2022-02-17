@@ -25,10 +25,13 @@
 #ifndef HAVE_SETLOCALE
 # define setlocale(category, locale) (locale)
 #endif
-
+#define WITH_HIGHTEC
 #ifdef ENABLE_NLS
 #include <libintl.h>
-extern void gcc_init_libintl (void);
+#ifdef WITH_HIGHTEC
+extern void init_htc_locale_dir (const char *, bool);
+#endif
+extern void gcc_init_libintl (bool);
 extern size_t gcc_gettext_width (const char *);
 #else
 /* Stubs.  */
@@ -39,7 +42,10 @@ extern size_t gcc_gettext_width (const char *);
 # undef gettext
 # define gettext(msgid) (msgid)
 # define ngettext(singular,plural,n) fake_ngettext (singular, plural, n)
-# define gcc_init_libintl()	/* nothing */
+# define gcc_init_libintl(X)	/* nothing */
+#ifdef WITH_HIGHTEC
+# define init_htc_locale_dir(X,Y)	/* nothing */
+#endif
 # define gcc_gettext_width(s) strlen (s)
 
 extern const char *fake_ngettext (const char *singular, const char *plural,
