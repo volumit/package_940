@@ -3160,6 +3160,7 @@ tilepro*-*-linux*)
 	;;
 tricore-*)
 	tm_file="tricore/tricore-devices.h ${tm_file} elfos.h"
+	extra_modes=tricore/tricore-modes.def
 	extra_gcc_objs="driver-tricore.o tricore-devices.o"
 	extra_objs="tricore-devices.o"
 	tmake_file="tricore/t-multilib tricore/t-tricore"
@@ -3778,6 +3779,27 @@ if test x$with_fpu = x; then
       ;;
   esac
 fi
+
+# Suport --with-hightec
+if test "x${with_hightec}" != "xno"; then
+    extra_objs="${extra_objs} htc-common.o"
+    extra_objs="${extra_objs} htc-common-c.o"
+    extra_objs="${extra_objs} htc-common-sections.o"
+    extra_objs="${extra_objs} htc-targhooks.o"
+    extra_objs="${extra_objs} htc-target-log.o"
+    target_gtfiles="${target_gtfiles} \$(srcdir)/config/htc-common.c"
+    target_gtfiles="${target_gtfiles} \$(srcdir)/config/htc-common-sections.c"
+    tmake_file="${tmake_file} t-htc-common"
+    tm_file="${tm_file} htc-common.h"
+    tm_file="${tm_file} htc-common-c.h"
+    tm_file="${tm_file} htc-common-sections.h"
+    tm_file="${tm_file} htc-target-common.h"
+    tm_file="${tm_file} htc-targhooks.h"
+    tm_file="${tm_file} htc-target-log.h"
+    extra_options="${extra_options} htc-common.opt"
+    tm_defines="${tm_defines} WITH_HIGHTEC"
+fi
+
 
 # Support --with-fpmath.
 if test x$with_fpmath != x; then
