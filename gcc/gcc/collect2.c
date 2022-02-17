@@ -974,8 +974,12 @@ main (int argc, char **argv)
 
   /* Unlock the stdio streams.  */
   unlock_std_streams ();
-
-  gcc_init_libintl ();
+  /* GCC-158, GCC-216 (4.6), HDP-858 (4.9):
+     handle -ferror-numbers option.  */
+#ifdef WITH_HIGHTEC
+  init_htc_locale_dir (getenv ("GCC_EXEC_PREFIX"), true);
+#endif
+  gcc_init_libintl (false);
 
   diagnostic_initialize (global_dc, 0);
 
