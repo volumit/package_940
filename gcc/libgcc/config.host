@@ -1386,7 +1386,9 @@ tilepro*-*-linux*)
 	md_unwind_header=tilepro/linux-unwind.h
         ;;
 tricore-*-*)
+	tmake_file="$tmake_file tricore/t-tricore"
 	tmake_file="$tmake_file t-fdpbit"
+	extra_parts="$extra_parts crti.o crtn.o"
 	;;
 v850*-*-*)
 	tmake_file="${tmake_file} v850/t-v850 t-fdpbit"
