@@ -365,7 +365,8 @@ d_init (void)
      converting (C signed char *) to (D char *) for string arguments of
      built-in functions.  The parameter (signed_char = false) specifies
      whether char is signed.  */
-  build_common_tree_nodes (false);
+  /* added parameter for tricore port for short_double */
+  build_common_tree_nodes (false,false);
 
   d_init_builtins ();
 
