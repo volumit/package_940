@@ -513,7 +513,11 @@ extern const UQItype __popcount_tab[256];
    need for a separate table for the __ctz builtins.  */
 extern const UQItype __clz_tab[256];
 
+#if defined(__HIGHTEC__)
+#include "htc-longlong.h"
+#else
 #include "longlong.h"
+#endif
 
 #undef int
 extern int __clzDI2 (UDWtype);
