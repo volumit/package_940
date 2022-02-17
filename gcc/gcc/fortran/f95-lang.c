@@ -503,7 +503,7 @@ gfc_init_decl_processing (void)
 
   /* Build common tree nodes. char_type_node is unsigned because we
      only use it for actual characters, not for INTEGER(1).  */
-  build_common_tree_nodes (false);
+  build_common_tree_nodes (false,false);
 
   void_list_node = build_tree_list (NULL_TREE, void_type_node);
 
