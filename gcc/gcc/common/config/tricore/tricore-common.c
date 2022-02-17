@@ -23,6 +23,7 @@ along with GCC; see the file COPYING3.  If not see
 #include "coretypes.h"
 #include "diagnostic.h"
 #include "tm.h"
+#include "memmodel.h"
 #include "tm_p.h"
 #include "rtl.h"
 #include "tree.h"
@@ -30,6 +31,11 @@ along with GCC; see the file COPYING3.  If not see
 #include "common/common-target.h"
 #include "common/common-target-def.h"
 #include "opts.h"
+#include "flags.h"
+#include "sbitmap.h"
+#include "diagnostic.h"
+#include <algorithm>
+
 
 int tric_zdata_max;
 int tric_zdata_min;
@@ -137,6 +143,8 @@ tric_opt_error (int value, const char *op1, const char *op2, location_t loc)
   if (value)
     error_at (loc, "Cannot use options %qs and %qs simultaneously", op1, op2);
 }
+
+
 
 
 /* Implement `TARGET_HANDLE_OPTION'  */
