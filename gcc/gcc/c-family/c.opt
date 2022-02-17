@@ -1731,6 +1731,11 @@ frtti
 C++ ObjC++ Optimization Var(flag_rtti) Init(1)
 Generate run time type descriptor information.
 
+;introduced again for tricore
+fshort-double
+C ObjC C++ ObjC++ Optimization Var(flag_short_double) Init(0)
+Use the same size for double as for float
+
 fshort-enums
 C ObjC C++ ObjC++ LTO Optimization Var(flag_short_enums)
 Use the narrowest integer type possible for enumeration types.
