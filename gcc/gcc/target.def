@@ -28,6 +28,55 @@
 
 HOOK_VECTOR (TARGET_INITIALIZER, gcc_target)
 
+/* Target hooks introduced and maintained by HighTec.  */
+#define HOOK_PREFIX "TARGET_HTC_"
+HOOK_VECTOR (TARGET_HTC, htc)
+
+/* Canonicalize X to a different but equivalent expression if that is more
+   convenient.  */
+DEFHOOK
+(canonicalize_combined_rtx,
+ "If defined, a function that replaces @var{x} by an equivalent expression.\n\
+This hook is run during insn combination and called with a newly created\n\
+pattern, usually a @code{set}.  It is always safe not to implement this\n\
+hook or to return @var{x} unaltered.",
+ rtx, (rtx x),
+ hook_rtx_rtx_identity)
+
+DEFHOOK
+(sched_may_change_address_p,
+ "Return true (default) if the scheduler is allowed to modify addresses\n\
+of memory insns.  This might occur as the scheduler drags an address\n\
+modifying instruction across a memory reference in order to break\n\
+instruction dependencies and to come up with more scheduling\n\
+opportunities.",
+ bool, (void),
+ hook_bool_void_true)
+
+DEFHOOK
+(ivopt_base_costs_p,
+ "This hook is invoked during loop induction variable optimization and\n\
+is currently only used to work around a TriCore hardware problem.\n\
+\n\
+Return true if the loop induction variable optimization should use\n\
+a base cost model for IV candidates.  Default is to return @code{true}.",
+ bool, (void),
+ hook_bool_void_true)
+
+DEFHOOK
+(ivopt_use_address_p,
+ "This hook is invoked during loop induction variable optimization and\n\
+is currently only used to work around a TriCore hardware problem.\n\
+\n\
+Return true if IV uses that involve addresses (of kind @code{USE_ADDRESS})\n\
+should be taken into account for respective optimization.  Default is\n\
+to return @code{true}.",
+ bool, (void),
+ hook_bool_void_true)
+
+HOOK_VECTOR_END (htc)
+#undef HOOK_PREFIX
+
 /* Functions that output assembler for the target.  */
 #define HOOK_PREFIX "TARGET_ASM_"
 HOOK_VECTOR (TARGET_ASM_OUT, asm_out)
