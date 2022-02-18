@@ -2320,6 +2320,9 @@ find_interesting_uses_address (struct ivopts_data *data, gimple *stmt,
   struct iv *civ;
   struct ifs_ivopts_data ifs_ivopts_data;
 
+  if (!targetm.htc.ivopt_use_address_p())
+    goto fail;
+
   /* Do not play with volatile memory references.  A bit too conservative,
      perhaps, but safe.  */
   if (gimple_has_volatile_ops (stmt))
