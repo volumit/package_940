@@ -410,6 +410,9 @@ static const char *greater_than_spec_func (int, const char **);
 static const char *debug_level_greater_than_spec_func (int, const char **);
 static const char *find_fortran_preinclude_file (int, const char **);
 static char *convert_white_space (char *);
+static void set_htc_gcc_options (int, char **);
+static void htc_escape_temp_file (const char**);
+
 
 /* The Specs Language
 
@@ -5637,6 +5640,9 @@ do_spec_1 (const char *spec, int inswitch, const char *soft_matched_part)
 		      t->suffix = save_string (suffix, suffix_length);
 		    t->unique = (c == 'u' || c == 'U' || c == 'j');
 		    temp_filename = make_temp_file (t->suffix);
+#if defined(_WIN32) && !defined(__CYGWIN__)
+		    htc_escape_temp_file (&temp_filename);
+#endif
 		    temp_filename_length = strlen (temp_filename);
 		    t->filename = temp_filename;
 		    t->filename_length = temp_filename_length;
@@ -7382,6 +7388,7 @@ driver::main (int argc, char **argv)
   decode_argv (argc, const_cast <const char **> (argv));
   global_initializations ();
   build_multilib_strings ();
+  set_htc_gcc_options (argc, argv);
   set_up_specs ();
   putenv_COLLECT_AS_OPTIONS (assembler_options);
   putenv_COLLECT_GCC (argv[0]);
@@ -7463,7 +7470,34 @@ driver::global_initializations ()
   /* Unlock the stdio streams.  */
   unlock_std_streams ();
 
-  gcc_init_libintl ();
+#ifdef WITH_HIGHTEC
+  {
+    bool canonical = true;
+
+    for (unsigned i = 1; i < decoded_options_count; i++)
+      {
+        if (canonical
+	    && decoded_options[i].opt_index == OPT_no_canonical_prefixes)
+          canonical = false;
+
+        if (0 == strcmp (decoded_options[i].orig_option_with_args_text,
+			 "-ferror-numbers"))
+          {
+            htc_opt_error_numbers = true;
+            add_linker_option ("--error-numbers", strlen ("--error-numbers"));
+          }
+
+        if (0 == strcmp (decoded_options[i].orig_option_with_args_text,
+			 "-fno-error-numbers"))
+          htc_opt_error_numbers = false;
+      }
+
+    init_htc_locale_dir (decoded_options[0].arg, canonical);
+    gcc_init_libintl (htc_opt_error_numbers);
+  }
+#else
+  gcc_init_libintl (false);
+#endif /* WITH_HIGHTEC */
 
   diagnostic_initialize (global_dc, 0);
   diagnostic_color_init (global_dc);
@@ -7578,6 +7612,7 @@ driver::set_up_specs () const
      Decode switches that are handled locally.  */
 
   process_command (decoded_options_count, decoded_options);
+
 
   /* Initialize the vector of specs to just the default.
      This means one element containing 0s, as a terminator.  */
@@ -10288,3 +10323,130 @@ driver_get_configure_time_options (void (*cb) (const char *option,
   obstack_free (&obstack, NULL);
   n_switches = 0;
 }
+
+
+const char *
+insert_htc_tooldir_spec_function (int argc, const char **argv)
+{
+  char *pdir;
+  static char *lic_dir = 0;
+  const char *value;
+  char *result;
+  char *ptr;
+  size_t len;
+
+  if (lic_dir == 0)
+    {
+      if (gcc_exec_prefix)
+        lic_dir = concat (gcc_exec_prefix, tooldir_base_prefix, NULL);
+      else
+        lic_dir = concat (standard_bindir_prefix, "../", NULL);
+    }
+
+  if (argc == 1)
+    pdir = concat (lic_dir, argv[0], NULL);
+  else if (argc == 2)
+    pdir = concat (argv[0], lic_dir, argv[1], NULL);
+  else
+    pdir = concat (lic_dir, NULL);
+
+  /* We have to escape every character of the path variable so
+     they are not interpreted as active spec characters.  A
+     particularly painful case is when we are reading a variable
+     holding a windows path complete with \ separators.  */
+
+  len = strlen (pdir) * 2 + 1;
+  result = XNEWVAR (char, len);
+  value = pdir;
+
+  for (ptr = result; *value; ptr += 2)
+    {
+      ptr[0] = '\\';
+      ptr[1] = *value++;
+    }
+  *ptr = '\0';
+
+  free (pdir);
+
+  return result;
+}
+
+
+/* Put passed optionss into HTC_GCC_OPTIONS environment variable.  */
+
+static void
+set_htc_gcc_options (int argc, char **argv)
+{
+  int i;
+  char b[3];
+  char *buffer = concat ("HTC_GCC_OPTIONS=", NULL);
+
+  b[0] = '\\';
+  b[2] = '\0';
+
+  for (i = 1; i < argc; ++i)
+    {
+      const char *p, *quote_me;
+      char *opt = concat ("", NULL);
+
+      for (p = argv[i]; *p; ++p)
+        {
+          /* Some characters can only arrive here if they had been escaped
+             originally.  Escape these characters again.  There may be cases
+             where it is not possible to completely recover from the shell,
+             but the following is a reasonably close match (hope so).  */
+
+          bool escape_me = (*p == '"' || *p == '\\' || *p == '$' || *p == '`');
+          b[1] = *p;
+          opt = reconcat (opt, opt, b + (escape_me ? 0 : 1), NULL);
+        }
+
+      /* The only way to get characters that have a special meaning to the
+         shell into an option is to quote (parts of) that option (or, on
+         some systems, to escape the space itself).  Thus, if we see such a
+         character, we quote the option as a whole.  Notice that this depends
+         on the shell and the result as gained with, say strings, might
+         not be suitable for feeding it back into the shell as a full
+         fledged command line.  */
+
+      quote_me = strpbrk (argv[i], " &|%<>();") ? "\"" : "";
+
+      /* Seperate options by \n so that the compiler proper can split them.  */
+
+      buffer = reconcat (buffer, buffer, i == 1 ? "" : "\n",
+                         quote_me, opt, quote_me, NULL);
+      free (opt);
+    }
+
+  xputenv (buffer);
+}
+
+static void
+htc_escape_temp_file (const char** filename)
+{
+  size_t len;
+  char *escaped_filename;
+  const char *p;
+  char *rp;
+  int backslash_count = 0;
+
+  for (p = *filename; *p; ++p)
+    if (*p == '\\')
+      backslash_count++;
+
+  len = strlen (*filename) + backslash_count + 1;
+  escaped_filename = XNEWVAR (char, len);
+  rp = escaped_filename;
+
+  for (p = *filename; *p; ++p)
+    {
+      if (*p == '\\')
+        *rp++ = *p;
+      *rp++ = *p;
+    }
+  *rp = '\0';
+
+  XDELETEVEC(*filename);
+  *filename = escaped_filename;
+}
+
