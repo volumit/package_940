@@ -232,8 +232,8 @@ tric_handle_option (struct gcc_options *opts ATTRIBUTE_UNUSED,
       tric_opt_error (tric_opt_mabs_const, "-msmall-pid", "-mabs-const=", loc);
       return true;
 
-    case OPT_msection_asm_name:
-      return htc_register_section_asm_name (decoded);
+//    case OPT_msection_asm_name:
+//      return htc_register_section_asm_name (decoded);
 
     case OPT_merrata_:
       tric_errata[value].fixit = 1;
