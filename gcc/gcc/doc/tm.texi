@@ -54,6 +54,7 @@ through the macros defined in the @file{.h} file.
 * C++ ABI::             Controlling C++ ABI changes.
 * D Language and ABI::  Controlling D ABI changes.
 * Named Address Spaces:: Adding support for named address spaces
+* HighTec Hooks::       Hooks maintained by HighTec
 * Misc::                Everything else.
 @end menu
 
@@ -10864,6 +10865,42 @@ was not registered with @code{c_register_addr_space}.  @var{as} is
 the address space as registered with @code{c_register_addr_space}.
 @var{loc} is the location of the address space qualifier token.
 The default implementation does nothing.
+@end deftypefn
+
+@node HighTec Hooks
+@section Hooks maintained by HighTec
+@cindex HighTec
+
+@deftypefn {Target Hook} rtx TARGET_HTC_CANONICALIZE_COMBINED_RTX (rtx @var{x})
+If defined, a function that replaces @var{x} by an equivalent expression.
+This hook is run during insn combination and called with a newly created
+pattern, usually a @code{set}.  It is always safe not to implement this
+hook or to return @var{x} unaltered.
+@end deftypefn
+
+@deftypefn {Target Hook} bool TARGET_HTC_IVOPT_BASE_COSTS_P (void)
+This hook is invoked during loop induction variable optimization and
+is currently only used to work around a TriCore hardware problem.
+
+Return true if the loop induction variable optimization should use
+a base cost model for IV candidates.  Default is to return @code{true}.
+@end deftypefn
+
+@deftypefn {Target Hook} bool TARGET_HTC_IVOPT_USE_ADDRESS_P (void)
+This hook is invoked during loop induction variable optimization and
+is currently only used to work around a TriCore hardware problem.
+
+Return true if IV uses that involve addresses (of kind @code{USE_ADDRESS})
+should be taken into account for respective optimization.  Default is
+to return @code{true}.
+@end deftypefn
+
+@deftypefn {Target Hook} bool TARGET_HTC_SCHED_MAY_CHANGE_ADDRESS_P (void)
+Return true (default) if the scheduler is allowed to modify addresses
+of memory insns.  This might occur as the scheduler drags an address
+modifying instruction across a memory reference in order to break
+instruction dependencies and to come up with more scheduling
+opportunities.
 @end deftypefn
 
 @node Misc

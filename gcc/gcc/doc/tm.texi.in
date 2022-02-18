@@ -54,6 +54,7 @@ through the macros defined in the @file{.h} file.
 * C++ ABI::             Controlling C++ ABI changes.
 * D Language and ABI::  Controlling D ABI changes.
 * Named Address Spaces:: Adding support for named address spaces
+* HighTec Hooks::       Hooks maintained by HighTec
 * Misc::                Everything else.
 @end menu
 
@@ -7399,6 +7400,18 @@ c_register_addr_space ("__ea", ADDR_SPACE_EA);
 @hook TARGET_ADDR_SPACE_DEBUG
 
 @hook TARGET_ADDR_SPACE_DIAGNOSE_USAGE
+
+@node HighTec Hooks
+@section Hooks maintained by HighTec
+@cindex HighTec
+
+@hook TARGET_HTC_CANONICALIZE_COMBINED_RTX
+
+@hook TARGET_HTC_IVOPT_BASE_COSTS_P
+
+@hook TARGET_HTC_IVOPT_USE_ADDRESS_P
+
+@hook TARGET_HTC_SCHED_MAY_CHANGE_ADDRESS_P
 
 @node Misc
 @section Miscellaneous Parameters
