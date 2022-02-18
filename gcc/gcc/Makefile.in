@@ -2862,7 +2862,8 @@ gengtype-lex.c : gengtype-lex.l
 
 #
 # Remake internationalization support.
-CFLAGS-intl.o += -DLOCALEDIR=\"$(localedir)\"
+CFLAGS-intl.o += -DLOCALEDIR=\"$(localedir)\" \
+	-DSTANDARD_BINDIR_PREFIX=\"$(bindir)/\"
 
 #
 # Remake cpp.
