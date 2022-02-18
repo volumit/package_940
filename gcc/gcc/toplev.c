@@ -1100,8 +1100,12 @@ general_init (const char *argv0, bool init_signals)
 
   /* Unlock the stdio streams.  */
   unlock_std_streams ();
-
-  gcc_init_libintl ();
+#ifdef WITH_HIGHTEC
+  init_htc_locale_dir (getenv ("GCC_EXEC_PREFIX"), true);
+  gcc_init_libintl (htc_opt_error_numbers);
+#else
+  gcc_init_libintl (false);
+#endif /* WITH_HIGHTEC */
 
   identifier_to_locale_alloc = alloc_for_identifier_to_locale;
   identifier_to_locale_free = ggc_free;
