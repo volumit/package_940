@@ -298,6 +298,11 @@ DEFTIMEVAR (TV_INITIALIZE_RTL        , "initialize rtl")
 DEFTIMEVAR (TV_GIMPLE_LADDRESS       , "address lowering")
 DEFTIMEVAR (TV_TREE_LOOP_IFCVT       , "tree loop if-conversion")
 
+/* HighTec.  */
+DEFTIMEVAR (TV_HTC_SECTION_LOOKUP    , "htc section lookup")
+DEFTIMEVAR (TV_HTC_SECTION_RESOLUTION, "htc section resolution")
+DEFTIMEVAR (TV_HTC_SECSPEC_HATCH     , "htc secspec hatching")
+
 /* Everything else in rest_of_compilation not included above.  */
 DEFTIMEVAR (TV_EARLY_LOCAL	     , "early local passes")
 DEFTIMEVAR (TV_OPTIMIZE		     , "unaccounted optimizations")
