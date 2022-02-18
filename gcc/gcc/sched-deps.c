@@ -4963,6 +4963,9 @@ find_modifiable_mems (rtx_insn *head, rtx_insn *tail)
   rtx_insn *insn, *next_tail = NEXT_INSN (tail);
   int success_in_block = 0;
 
+  if (!targetm.htc.sched_may_change_address_p())
+    return;
+
   for (insn = head; insn != next_tail; insn = NEXT_INSN (insn))
     {
       struct mem_inc_info mii;
