@@ -281,7 +281,7 @@ section *
 get_section (const char *name, unsigned int flags, tree decl)
 {
   section *sect, **slot;
-
+  
   slot = section_htab->find_slot_with_hash (name, htab_hash_string (name),
 					    INSERT);
   flags |= SECTION_NAMED;
@@ -452,8 +452,6 @@ set_implicit_section (struct symtab_node *n, void *data ATTRIBUTE_UNUSED)
   n->implicit_section = true;
   return false;
 }
-
-/* If required, set DECL_SECTION_NAME to a unique name.  */
 
 void
 resolve_unique_section (tree decl, int reloc ATTRIBUTE_UNUSED,
@@ -1001,7 +999,6 @@ decode_reg_name (const char *name)
   return decode_reg_name_and_count (name, &count);
 }
 
-
 /* Return true if DECL's initializer is suitable for a BSS section.  */
 
 bool
