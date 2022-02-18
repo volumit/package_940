@@ -628,9 +628,14 @@ validate_pattern (rtx pattern, md_rtx_info *info, rtx set, int set_code)
 	/* Allowing non-lvalues in destinations -- particularly CONST_INT --
 	   while not likely to occur at runtime, results in less efficient
 	   code from insn-recog.c.  */
+//	if (set && pred && pred->allows_non_lvalue)
+//	  error_at (info->loc, "destination operand %d allows non-lvalue",
+//		    XINT (pattern, 0));
+
+	/*Generated only warning, is related to tricore-combine.md *st.t.0.and{<mode>} and following */
 	if (set && pred && pred->allows_non_lvalue)
-	  error_at (info->loc, "destination operand %d allows non-lvalue",
-		    XINT (pattern, 0));
+		message_at (info->loc, "warning: destination operand %d allows non-lvalue",
+				XINT (pattern, 0));
 
 	/* A modeless MATCH_OPERAND can be handy when we can check for
 	   multiple modes in the c_test.  In most other cases, it is a
