@@ -1446,8 +1446,8 @@
       return "sat.b\t%0, %1";
     else if (tric_sat_p (HImode, <minmax:CODE>, operands[2], <minmax2:CODE>, operands[3]))
       return "sat.h\t%0, %1";
-    else
-      gcc_unreachable();
+/*    else
+      gcc_unreachable();*/
   }
   "!reload_completed
    && !tric_map_combine"
