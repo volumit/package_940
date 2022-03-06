@@ -11464,6 +11464,11 @@ recog_for_combine_1 (rtx *pnewpat, rtx_insn *insn, rtx *pnotes)
 
   old_pat = PATTERN (insn);
   old_notes = REG_NOTES (insn);
+
+  /* HDP-231 (4.9): Improve efficiency of tricore-gcc 4.9 code generation:
+     canonicalize combined RTXes.  */
+  pat = targetm.htc.canonicalize_combined_rtx (pat);
+
   PATTERN (insn) = pat;
   REG_NOTES (insn) = NULL_RTX;
 
