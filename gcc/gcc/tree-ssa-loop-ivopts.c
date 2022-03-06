@@ -3251,6 +3251,8 @@ add_autoinc_candidates (struct ivopts_data *data, tree base, tree step,
   mem_mode = TYPE_MODE (use->mem_type);
   if (((USE_LOAD_PRE_INCREMENT (mem_mode)
 	|| USE_STORE_PRE_INCREMENT (mem_mode))
+/* tricore addon */
+/*       && targetm.htc.ivopt_base_costs_p () */
        && known_eq (GET_MODE_SIZE (mem_mode), cstepi))
       || ((USE_LOAD_PRE_DECREMENT (mem_mode)
 	   || USE_STORE_PRE_DECREMENT (mem_mode))
@@ -3276,6 +3278,8 @@ add_autoinc_candidates (struct ivopts_data *data, tree base, tree step,
        && known_eq (GET_MODE_SIZE (mem_mode), cstepi))
       || ((USE_LOAD_POST_DECREMENT (mem_mode)
 	   || USE_STORE_POST_DECREMENT (mem_mode))
+       /* tricore addon */
+/*        && targetm.htc.ivopt_base_costs_p () */
 	  && known_eq (GET_MODE_SIZE (mem_mode), -cstepi)))
     {
       add_candidate_1 (data, base, step, important, IP_AFTER_USE, use,
@@ -4575,7 +4579,19 @@ get_address_cost (struct ivopts_data *data, struct iv_use *use,
     cost.complexity += 1;
   if (parts.offset != NULL_TREE && !integer_zerop (parts.offset))
     cost.complexity += 1;
-
+#if 0  /* HDP-1333:
+     Increase the cost for candidates like BASE + OFFSET + RATIO * STEP,
+     where OFFSET > 0 and (RATIO * STEP) < 0. This will move the offset
+     calculation from the loop body into the loop setup.  */
+  if (!targetm.htc.ivopt_base_costs_p ()
+      && (acost != INFTY) && (s_offset > 0)
+      && ((ratio * cstep) < 0))
+    {
+      acost += 10000;
+      if (acost > INFTY)
+        acost = INFTY;
+    }
+#endif
   return cost;
 }
 
