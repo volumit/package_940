@@ -10340,6 +10340,8 @@ return false;
 //TODO
 /*only a view architectures are using it */
 /*testsuite/gcc.c-torture/execute/20030222-1.c:16:1: internal compiler error: Max. number of generated reload insns per insn is achieved (90) */
+/*testsuite/gcc.c-torture/execute/stkalign.c fails as well */
+/*I made some investigations with real benchmark code and lra is a little be worse then without */
 #undef TARGET_LRA_P
 #define TARGET_LRA_P hook_bool_void_false
 
@@ -10538,9 +10540,10 @@ return false;
 
 #undef  TARGET_CANONICALIZE_COMPARISON
 #define TARGET_CANONICALIZE_COMPARISON tric_canonicalize_comparison
-//TODO
-//#undef  TARGET_HTC_CANONICALIZE_COMBINED_RTX
-//#define TARGET_HTC_CANONICALIZE_COMBINED_RTX tric_htc_canonicalize_combined_rtx
+// needs adaptations in combine.c
+//only the hook was added
+#undef  TARGET_HTC_CANONICALIZE_COMBINED_RTX
+#define TARGET_HTC_CANONICALIZE_COMBINED_RTX tric_htc_canonicalize_combined_rtx
 
 #undef  TARGET_CAN_USE_DOLOOP_P
 #define TARGET_CAN_USE_DOLOOP_P tric_can_use_doloop_p
@@ -10568,14 +10571,17 @@ return false;
 
 #undef  TARGET_MANGLE_TYPE
 #define TARGET_MANGLE_TYPE tric_mangle_type
-
+// needs adaptations in tree-ssa-loop-ivopts.c
+//add the moment it is commented out and the hook is not called
 #undef  TARGET_HTC_IVOPT_BASE_COSTS_P
 #define TARGET_HTC_IVOPT_BASE_COSTS_P tric_ivopt_base_costs_p
 
-//TODO needs adaptations in tree-ssa-loop-ivopts.c
+// needs adaptations in tree-ssa-loop-ivopts.c
+//only the hook was added
 #undef  TARGET_HTC_IVOPT_USE_ADDRESS_P
 #define TARGET_HTC_IVOPT_USE_ADDRESS_P tric_ivopt_use_address_p
-
+// needs adaptations in sched-deps.c
+//only the hook was added
 #undef  TARGET_HTC_SCHED_MAY_CHANGE_ADDRESS_P
 #define TARGET_HTC_SCHED_MAY_CHANGE_ADDRESS_P tric_sched_may_change_address_p
 
