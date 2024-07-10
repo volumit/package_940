@@ -157,6 +157,10 @@ extern int vsnprintf(char *, size_t, const char *, va_list);
 # define N_(String) (String)
 #endif
 
+#ifdef HAVE_SETLOCALE
+#include <locale.h>
+#endif
+
 /* Used by ar.c and objcopy.c.  */
 #define BUFSIZE 8192
 

@@ -163,6 +163,10 @@ extern int fseeko64 (FILE *stream, off64_t offset, int whence);
 #endif
 #endif
 
+#ifdef HAVE_SETLOCALE
+#include <locale.h>
+#endif
+
 /* Define offsetof for those systems which lack it */
 
 #ifndef offsetof

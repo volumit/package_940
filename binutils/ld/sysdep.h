@@ -93,4 +93,8 @@ extern char *getenv ();
 extern char **environ;
 #endif
 
+#ifdef HAVE_SETLOCALE
+#include <locale.h>
+#endif
+
 #endif /* ! defined (LD_SYSDEP_H) */
