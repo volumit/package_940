@@ -32,7 +32,6 @@
    don't support them now.  */
 
 #define COMMON
-
 #include "as.h"
 #include "subsegs.h"
 #include "output-file.h"
@@ -58,6 +57,10 @@
 #ifdef NEED_DECLARATION_SBRK
 extern void *sbrk ();
 #endif
+#endif
+
+#ifdef HAVE_SETLOCALE
+#include <locale.h>
 #endif
 
 #ifdef USING_CGEN
@@ -951,7 +954,7 @@ dump_statistics (void)
 
   fprintf (stderr, _("%s: total time in assembly: %ld.%06ld\n"),
 	   myname, run_time / 1000000, run_time % 1000000);
-#ifdef HAVE_SBRK
+#if (defined HAVE_SBRK) && defined (NEED_DECLARATION_ENVIRON)
   fprintf (stderr, _("%s: data size %ld\n"),
 	   myname, (long) (lim - (char *) &environ));
 #endif
